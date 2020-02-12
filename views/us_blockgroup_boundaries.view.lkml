@@ -1,5 +1,12 @@
+map_layer: census_blockgroups {
+  feature_key: "Census Blockgroups"
+  url: "https://raw.githubusercontent.com/shanecglass/Looker-Demos/8627645cf84f5299a50f300302e677c4453cea1b/blockgroups.json"
+  format:  topojson
+  property_key: "geo_id"
+}
+
 view: us_blockgroup_boundaries {
-  sql_table_name: retail_banking_demo.us_blockgroup_boundaries ;;
+  sql_table_name: bigquery-public-data.geo_census_blockgroups ;;
 
   dimension: area_land_meters {
     type: number

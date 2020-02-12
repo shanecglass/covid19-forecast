@@ -1,5 +1,5 @@
 view: us_zip_code_boundaries {
-  sql_table_name: retail_banking_demo.us_zip_code_boundaries ;;
+  sql_table_name: bigquery-public-data.geo_us_boundaries.zip_codes ;;
 
   dimension: area_land_meters {
     type: number

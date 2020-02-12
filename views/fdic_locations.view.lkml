@@ -1,5 +1,5 @@
 view: fdic_locations {
-  sql_table_name: retail_banking_demo.fdic_locations ;;
+  sql_table_name: bigquery-public-data.fdic_banks.fdic_locations ;;
 
   dimension: branch_address {
     type: string
