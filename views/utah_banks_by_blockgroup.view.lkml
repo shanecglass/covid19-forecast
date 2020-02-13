@@ -1,6 +1,6 @@
 map_layer: us_blockgroups {
   feature_key: "blockgroup_geom"
-  url: "https://raw.githubusercontent.com/shanecglass/Looker-Demos/master/geos/blockgroups3%20(1)%20(3).json"
+  url: "https://github.com/shanecglass/Looker-Demos/blob/master/geos/blockgroups3%20(1)%20(3).json"
   format:  topojson
   property_key: "geo_id"
   label: "Block Group"

@@ -22,7 +22,7 @@ view: utah_acs_2017_zipcodes {
 
 ,acs_2017 AS (
   SELECT
-    geo_id,
+    CAST(geo_id as STRING) AS zip_code
     total_pop,
     median_age,
     households,
@@ -49,7 +49,7 @@ view: utah_acs_2017_zipcodes {
     income_10000_14999,
     income_less_10000,
     employed_pop,
-    bachelors_degree_or_higher_25_64
+    ROUND(SAFE_DIVIDE(bachelors_degree_or_higher_25_64, pop_25_64),4)*100 AS rate_bachelors_degree_or_higher_25_64
   FROM
     `bigquery-public-data.census_bureau_acs.zip_codes_2017_5yr`
   JOIN
@@ -65,7 +65,7 @@ FROM
   dimension: Zip_Code{
     description: "The 5 digit zip code associated with the ZCTA."
     type: zipcode
-    sql: ${TABLE}.total_pop;;
+    sql: ${TABLE}.zip_code;;
   }
 
   dimension: Population {
@@ -219,10 +219,10 @@ FROM
     sql: ${TABLE}.employed_pop ;;
   }
 
-  dimension: bachelors_degree_or_higher_25_64 {
-    description: "Population with Bachelors Degree or Higher, Ages 25 to 64. The number of people in each geography who are between the ages of 25 and 64 who have attained a bachelors degree or higher."
+  dimension: rate_bachelors_degree_or_higher_25_64 {
+    description: "Rate of the population with Bachelors Degree or Higher, Ages 25 to 64. The number of people in each geography who are between the ages of 25 and 64 who have attained a bachelors degree or higher."
     type: number
-    sql: ${TABLE}.bachelors_degree_or_higher_25_64 ;;
+    sql: ${TABLE}.rate_bachelors_degree_or_higher_25_64 ;;
   }
 
 }

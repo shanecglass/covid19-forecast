@@ -11,14 +11,14 @@ explore: utah_banks_by_zip {
   view_name: utah_banks_by_zip
 }
 
-explore: utah_acs_changes_2011_2017  {
+explore: utah_ACS_changes_2011_2017  {
     view_name: utah_acs_changes_2011_2017
 }
 
-explore: utah_acs_2017_zipcodes {
+explore: utah_ACS_2017_zipcodes {
     view_name: utah_acs_2017_zipcodes
 }
 
-explore: utah_acs_2011_zipcodes {
+explore: utah_ACS_2011_zipcodes {
     view_name: utah_acs_2011_zipcodes
 }
