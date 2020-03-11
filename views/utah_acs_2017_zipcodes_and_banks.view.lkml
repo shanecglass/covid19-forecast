@@ -1,24 +1,39 @@
-view: utah_acs_2017_zipcodes {
-
-   derived_table: {
-     sql: WITH
-  utah_fips AS (
-  SELECT
+view: utah_acs_2017_zipcodes_and_banks {
+  derived_table:{
+    sql:
+  with utah_fips AS
+   (SELECT
     state_fips_code
-  FROM
+   FROM
     `bigquery-public-data.census_utility.fips_codes_states`
-  WHERE
-    state_name = "Utah"),
+   WHERE
+    state_name = "Utah")
 
-  utah_zip AS (
-  SELECT
-    z.zip_code,
-    z.zip_code_geom,
+,utah_zip AS
+  (SELECT
+    z.zip_code
   FROM
-    `bigquery-public-data.geo_us_boundaries.zip_codes` z,
-    utah_fips u
-  WHERE
-    z.state_fips_code = u.state_fips_code)
+  `bigquery-public-data.geo_us_boundaries.zip_codes` z
+  ,utah_fips u
+    WHERE
+      z.state_fips_code = u.state_fips_code)
+
+,locations AS
+  (SELECT
+  COUNT(i.institution_name) AS count_locations,
+  l.zip_code
+FROM
+  utah_zip z
+JOIN
+  `bigquery-public-data.fdic_banks.locations` l USING (zip_code)
+JOIN
+  `bigquery-public-data.fdic_banks.institutions` i USING (fdic_certificate_number)
+WHERE
+  l.state IS NOT NULL
+  AND l.state_name IS NOT NULL
+  AND l.zip_code = z.zip_code
+GROUP BY
+  2)
 
 ,acs_2017 AS (
   SELECT
@@ -49,23 +64,69 @@ view: utah_acs_2017_zipcodes {
     income_10000_14999,
     income_less_10000,
     employed_pop,
-    ROUND(SAFE_DIVIDE(bachelors_degree_or_higher_25_64, pop_25_64),4)*100 AS rate_bachelors_degree_or_higher_25_64
+    ROUND(SAFE_DIVIDE(bachelors_degree_or_higher_25_64, pop_25_64)*100,4) AS rate_bachelors_degree_or_higher_25_64
   FROM
     `bigquery-public-data.census_bureau_acs.zip_codes_2017_5yr`
   JOIN
     utah_zip ON geo_id = zip_code)
 
 SELECT
-  *
+  z.zip_code,
+  l.count_locations AS locations_per_zip,
+  ROUND((l.count_locations /acs.total_pop)*10000,4) AS banks_per_10000_residents,
+  total_pop,
+  median_age,
+  households,
+  income_per_capita,
+  housing_units,
+  vacant_housing_units_for_sale,
+  owner_occupied_housing_units_lower_value_quartile,
+  owner_occupied_housing_units_median_value,
+  owner_occupied_housing_units_upper_value_quartile,
+  income_200000_or_more,
+  income_150000_199999,
+  income_125000_149999,
+  income_100000_124999,
+  income_75000_99999,
+  income_60000_74999,
+  income_50000_59999,
+  income_45000_49999,
+  income_40000_44999,
+  income_35000_39999,
+  income_30000_34999,
+  income_25000_29999,
+  income_20000_24999,
+  income_15000_19999,
+  income_10000_14999,
+  income_less_10000,
+  employed_pop,
+  rate_bachelors_degree_or_higher_25_64
 FROM
-  acs_2017
-       ;;
-  }
+  utah_zip z
+JOIN
+  locations l USING (zip_code)
+JOIN
+  acs_2017 acs USING (zip_code)
+ORDER BY
+  locations_per_zip desc;;
+   }
 
-  dimension: Zip_Code{
-    description: "The 5 digit zip code associated with the ZCTA."
-    type: zipcode
-    sql: ${TABLE}.zip_code;;
+# Define your dimensions and measures here, like this:
+  dimension: zip_code {
+     description: "Zip code associated with the ZCTA that contains the bank branches"
+     type: zipcode
+     sql: ${TABLE}.zip_code;;
+   }
+
+   dimension: locations_per_zip{
+     description: "The total number of bank branches for each ZCTA"
+     type: number
+     sql: ${TABLE}.locations_per_zip ;;
+   }
+  measure: Banks_Per_10000_Residents{
+    description: "The number of banks in the ZCTA for every 10,000 residents."
+    type: average
+    sql: ${TABLE}.banks_per_10000_residents;;
   }
 
   dimension: Population {

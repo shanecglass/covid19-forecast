@@ -22,3 +22,7 @@ explore: utah_ACS_2017_zipcodes {
 explore: utah_ACS_2011_zipcodes {
     view_name: utah_acs_2011_zipcodes
 }
+
+explore: utah_acs_2017_zipcodes_and_banks {
+    view_name:  utah_acs_2017_zipcodes_and_banks
+}
