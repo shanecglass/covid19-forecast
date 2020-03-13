@@ -7,6 +7,11 @@ include: "/views/*.view.lkml"                # include all views in the views/ f
 # # and define the joins that connect them together.
 #
 
+map_layer: us_census_places {
+  file: "city_limits.json"
+  property_key: "places"
+}
+
 explore: utah_banks_by_zip {
   view_name: utah_banks_by_zip
 }
