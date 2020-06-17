@@ -1,7 +1,17 @@
 view: state_forecast_table {
     # # You can specify the table name if it's different from the view name:
-    sql_table_name: covid-forecasting-272503.eval.PROD_study_20200615_182906_287 ;;
-    #
+  derived_table: {
+    sql:
+      SELECT
+        SUBSTR(location_id, 1,2) AS location_id,
+        f.* EXCEPT(location_id),
+        state_name
+      FROM
+        `covid-forecasting-272503.eval.PROD_study_20200615_182857_461` f
+      JOIN
+        `bigquery-public-data.geo_us_boundaries.states` s ON SUBSTR(f.location_id, 1,2) = s.geo_id
+       ;;
+   }
     # # Define your dimensions and measures here, like this:
     dimension: state_fips_code {
       description: "Unique ID for each US county in the prediction"
@@ -49,15 +59,7 @@ view: state_forecast_table {
 
 # view: covid_19_forecast_table {
 #   # Or, you could make this view a derived table, like this:
-#   derived_table: {
-#     sql: SELECT
-#         user_id as user_id
-#         , COUNT(*) as lifetime_orders
-#         , MAX(orders.created_at) as most_recent_purchase_at
-#       FROM orders
-#       GROUP BY user_id
-#       ;;
-#   }
+#
 #
 #   # Define your dimensions and measures here, like this:
 #   dimension: user_id {

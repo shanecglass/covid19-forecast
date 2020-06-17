@@ -1,7 +1,19 @@
 view: county_forecast_table {
   # # You can specify the table name if it's different from the view name:
-  sql_table_name: covid-forecasting-272503.eval.PROD_study_20200615_182906_287 ;;
-  #
+  derived_table: {
+  sql: SELECT
+        f.*,
+        CONCAT(c.lsad_name, ", ", s.state_name) as county_name
+      FROM
+        `covid-forecasting-272503.eval.PROD_study_20200615_182906_287` f
+      JOIN
+        `bigquery-public-data.geo_us_boundaries.counties` c ON f.location_id = c.geo_id
+      JOIN
+        `bigquery-public-data.geo_us_boundaries.states` s ON c.state_fips_code = s.geo_id
+       ;;
+    }
+
+
   # # Define your dimensions and measures here, like this:
   dimension: county_fips_code {
     description: "Unique ID for each US county in the prediction"
@@ -51,12 +63,7 @@ view: county_forecast_table {
 #   # Or, you could make this view a derived table, like this:
 #   derived_table: {
 #     sql: SELECT
-#         user_id as user_id
-#         , COUNT(*) as lifetime_orders
-#         , MAX(orders.created_at) as most_recent_purchase_at
-#       FROM orders
-#       GROUP BY user_id
-#       ;;
+
 #   }
 #
 #   # Define your dimensions and measures here, like this:
