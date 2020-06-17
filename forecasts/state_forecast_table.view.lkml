@@ -17,13 +17,14 @@ view: state_forecast_table {
       description: "Unique ID for each US county in the prediction"
       type: string
       sql: ${TABLE}.location_id ;;
-      map_layer_name: us_states
     }
 
     dimension: state  {
       description: "Full text name of the state"
       type: string
       sql:  ${TABLE}.state_name ;;
+      map_layer_name: us_states
+
     }
 
     dimension_group: training_window_end {
