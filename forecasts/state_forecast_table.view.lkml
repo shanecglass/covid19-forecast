@@ -19,7 +19,13 @@ view: state_forecast_table {
       sql: ${TABLE}.location_id ;;
       map_layer_name: us_states
     }
-    #
+
+    dimension: state  {
+      description: "Full text name of the state"
+      type: string
+      sql:  ${TABLE}.state_name ;;
+    }
+
     dimension_group: training_window_end {
       description: "Time of the end of the model training window"
       timeframes: [date, hour, week, month, year, hour2, hour3, hour4, hour6, hour12, day_of_week]
