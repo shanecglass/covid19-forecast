@@ -30,7 +30,7 @@ view: county_forecast_table {
 
   measure: point_prediction{
     description: "Predicted value for a given metric at the specified time horizon"
-    type:  number
+    type:  sum
     sql:  ${TABLE}.point_prediction ;;
    }
 
