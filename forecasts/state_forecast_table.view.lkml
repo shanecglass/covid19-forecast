@@ -53,7 +53,7 @@ view: state_forecast_table {
 
     measure: ground_truth{
       description: "Actual value for a given metric at the specified time horizon"
-      type:  number
+      type:  sum
       sql:  ${TABLE}.ground_truth ;;
     }
     # measure: total_lifetime_orders {
