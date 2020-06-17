@@ -7,6 +7,7 @@ view: county_forecast_table {
     description: "Unique ID for each US county in the prediction"
     type: string
     sql: ${TABLE}.location_id ;;
+    map_layer_name: us_counties_fips
   }
   #
   dimension_group: training_window_end {
