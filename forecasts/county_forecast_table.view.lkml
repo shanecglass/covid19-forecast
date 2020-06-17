@@ -3,7 +3,8 @@ view: county_forecast_table {
   derived_table: {
   sql: SELECT
         f.*,
-        CONCAT(c.lsad_name, ", ", s.state_name) as county_name
+        CONCAT(c.lsad_name, ", ", s.state_name) as county_name,
+        state_name
       FROM
         `covid-forecasting-272503.eval.PROD_study_20200615_182906_287` f
       JOIN
@@ -22,6 +23,12 @@ view: county_forecast_table {
     map_layer_name: us_counties_fips
   }
 
+  dimension: state {
+    description: "Unique ID for each US state in the prediction"
+    type: string
+    sql: ${TABLE}.state_name ;;
+    map_layer_name: us_states
+}
   dimension: county  {
     description: "Full text name of the county"
     type: string
