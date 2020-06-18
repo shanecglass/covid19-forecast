@@ -21,4 +21,10 @@ explore: county_forecast {
 
 explore: state_forecast_table  {
   view_name: state_forecast_table
+
+  join: county_info {
+      from: county_forecast_table
+      relationship: one_to_many
+      sql_on: ${state_forecast_table.state} = ${county_info.state} ;;
+  }
 }
