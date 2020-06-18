@@ -28,6 +28,9 @@ view: county_forecast_table {
     type: string
     sql: ${TABLE}.state_name ;;
     map_layer_name: us_states
+    drill_fields: [
+      county, predicted_metric, point_prediction
+    ]
 }
   dimension: county  {
     description: "Full text name of the county"
