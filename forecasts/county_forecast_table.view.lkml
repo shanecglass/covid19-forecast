@@ -68,13 +68,13 @@ view: county_forecast_table {
   measure: deaths{
     description: "Predicted value for a given metric at the specified time horizon"
     type:  running_total
-    sql:  ${TABLE}.point_prediction;;
+    sql:  ${TABLE}.deaths;;
    }
 
   measure: confirmed_cases{
     description: "Predicted value for a given metric at the specified time horizon"
     type:  running_total
-    sql:  ${TABLE}.point_prediction;;
+    sql:  ${TABLE}.confirmed;;
   }
 
   measure: point_prediction{
