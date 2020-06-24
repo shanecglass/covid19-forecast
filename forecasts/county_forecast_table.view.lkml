@@ -2,7 +2,10 @@ view: county_forecast_table {
   # # You can specify the table name if it's different from the view name:
   derived_table: {
   sql: SELECT
-        f.*,
+        f.* EXCEPT (point_prediction),
+        IF(predicted_metric = "death", point_prediction, NULL) AS deaths,
+        IF(predicted_metric = "confirmed)", point_prediction, NULL) AS confirmed,
+        IF(OR(predicted_metric = "death",(predicted_metric="confirmed",NULL,point_prediction) AS point_prediction,
         CONCAT(c.lsad_name, ", ", s.state_name) as county_name,
         state_name
       FROM
@@ -60,13 +63,13 @@ view: county_forecast_table {
   measure: deaths{
     description: "Predicted value for a given metric at the specified time horizon"
     type:  running_total
-    sql:  IF(${TABLE}.predicted_metric = "death", ${TABLE}.point_prediction, NULL);;
+    sql:  ${TABLE}.point_prediction;;
    }
 
   measure: confirmed_cases{
     description: "Predicted value for a given metric at the specified time horizon"
     type:  running_total
-    sql:  IF(${TABLE}.predicted_metric = "confirmed", ${TABLE}.point_prediction, NULL);;
+    sql:  ${TABLE}.point_prediction;;
   }
 
   measure: point_prediction{
