@@ -5,7 +5,12 @@ view: county_forecast_table {
         f.* EXCEPT (point_prediction),
         IF(predicted_metric = "death", point_prediction, NULL) AS deaths,
         IF(predicted_metric = "confirmed)", point_prediction, NULL) AS confirmed,
-        IF(OR(predicted_metric = "death",(predicted_metric="confirmed",NULL,point_prediction) AS point_prediction,
+        CASE
+          WHEN predicted_metric = "death" THEN NULL
+          WHEN predicted_metric = "confirmed" THEN NULL
+          ELSE
+            point_prediction
+        END AS point_prediction,
         CONCAT(c.lsad_name, ", ", s.state_name) as county_name,
         state_name
       FROM
