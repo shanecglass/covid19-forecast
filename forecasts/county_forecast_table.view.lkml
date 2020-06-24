@@ -6,7 +6,7 @@ view: county_forecast_table {
         CONCAT(c.lsad_name, ", ", s.state_name) as county_name,
         state_name
       FROM
-        `covid-forecasting-272503.eval.PROD_study_20200615_182906_287` f
+        `covid-forecasting-272503.export.forecast_COUNTY_14` f
       JOIN
         `bigquery-public-data.geo_us_boundaries.counties` c ON f.location_id = c.geo_id
       JOIN
@@ -19,7 +19,7 @@ view: county_forecast_table {
   dimension: county_fips_code {
     description: "Unique ID for each US county in the prediction"
     type: string
-    sql: ${TABLE}.location_id ;;
+    sql: ${TABLE}.fips_code ;;
     map_layer_name: us_counties_fips
   }
 
@@ -42,7 +42,7 @@ view: county_forecast_table {
     description: "Time of the end of the model training window"
     timeframes: [date, hour, week, month, year, hour2, hour3, hour4, hour6, hour12, day_of_week]
     type: time
-    sql: ${TABLE}.training_window_end ;;
+    sql: ${TABLE}.forecast_date ;;
   }
   #
   dimension: predicted_metric{
@@ -54,14 +54,25 @@ view: county_forecast_table {
   dimension: time_horizon{
     description: "The length into the future that the model is predicting"
     type: number
-    sql:  ${TABLE}.time_horizon ;;
+    sql:  ${TABLE}.target_prediction_date ;;
+  }
+
+  measure: deaths{
+    description: "Predicted value for a given metric at the specified time horizon"
+    type:  running_total
+    sql:  IF(${TABLE}.predicted_metric = "death", ${TABLE}.point_prediction, NULL) ;;
+   }
+
+  measure: confirmed_cases{
+    description: "Predicted value for a given metric at the specified time horizon"
+    type:  running_total
+    sql:  IF(${TABLE}.predicted_metric = "confirmed", ${TABLE}.point_prediction, NULL) ;;
   }
 
   measure: point_prediction{
-    description: "Predicted value for a given metric at the specified time horizon"
-    type:  sum
-    sql:  ${TABLE}.point_prediction ;;
-   }
+    description: "Predicted value for a given metric at a specified time"
+    type: sum
+    sql: ${TABLE}.point_prediction}
 
   measure: ground_truth{
     description: "Actual value for a given metric at the specified time horizon"

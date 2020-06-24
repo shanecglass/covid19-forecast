@@ -24,7 +24,6 @@ view: state_forecast_table {
       type: string
       sql:  ${TABLE}.state_name ;;
       map_layer_name: us_states
-
     }
 
     dimension_group: training_window_end {
