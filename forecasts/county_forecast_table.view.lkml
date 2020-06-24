@@ -1,22 +1,28 @@
 view: county_forecast_table {
   # # You can specify the table name if it's different from the view name:
   derived_table: {
-  sql: SELECT
-        f.* EXCEPT (point_prediction),
-        IF(predicted_metric = "death", point_prediction, NULL) AS deaths,
-        IF(predicted_metric = "confirmed)", point_prediction, NULL) AS confirmed,
+  sql: b.* EXCEPT (point_prediction, target_prediction_date),
+        EXTRACT(DATE from b.target_prediction_date) AS target_prediction_date,
+        IF(predicted_metric = "death", b.point_prediction, NULL) AS cumulative_deaths,
+        IF(predicted_metric = "confirmed)", b.point_prediction, NULL) AS cumulative_confirmed,
         CASE
-          WHEN predicted_metric = "death" THEN NULL
-          WHEN predicted_metric = "confirmed" THEN NULL
+          WHEN b.predicted_metric = "death" THEN b.point_prediction - a.point_prediction
+          WHEN b.predicted_metric = "confirmed" THEN b.point_prediction - a.point_prediction
           ELSE
-            point_prediction
+            b.point_prediction
         END AS point_prediction,
         CONCAT(c.lsad_name, ", ", s.state_name) as county_name,
         state_name
       FROM
-        `covid-forecasting-272503.export.forecast_COUNTY_14` f
+        (SELECT
+          fips_code,
+          point_prediction,
+          DATE_ADD(EXTRACT(DATE FROM target_prediction_date), INTERVAL 1 day) AS target_prediction_date
+         FROM `covid-forecasting-272503.export.forecast_COUNTY_14`) a
       JOIN
-        `bigquery-public-data.geo_us_boundaries.counties` c ON f.fips_code = c.geo_id
+        `covid-forecasting-272503.export.forecast_COUNTY_14` b ON EXTRACT(DATE from b.target_prediction_date) = a.target_prediction_date AND b.fips_code = a.fips_code
+      JOIN
+        `bigquery-public-data.geo_us_boundaries.counties` c ON b.fips_code = c.geo_id
       JOIN
         `bigquery-public-data.geo_us_boundaries.states` s ON c.state_fips_code = s.geo_id
        ;;
