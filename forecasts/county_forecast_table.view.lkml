@@ -8,7 +8,7 @@ view: county_forecast_table {
       FROM
         `covid-forecasting-272503.export.forecast_COUNTY_14` f
       JOIN
-        `bigquery-public-data.geo_us_boundaries.counties` c ON f.location_id = c.geo_id
+        `bigquery-public-data.geo_us_boundaries.counties` c ON f.fips_code = c.geo_id
       JOIN
         `bigquery-public-data.geo_us_boundaries.states` s ON c.state_fips_code = s.geo_id
        ;;
